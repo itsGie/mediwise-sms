@@ -1,0 +1,239 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body,
+html {
+  scroll-behavior: smooth;
+  background: white;
+}
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 20 14.3% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 14.3% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 14.3% 4.1%;
+    --primary: 24.6 95% 53.1%;
+    --primary-foreground: 60 9.1% 97.8%;
+    --secondary: 60 4.8% 95.9%;
+    --secondary-foreground: 24 9.8% 10%;
+    --muted: 60 4.8% 95.9%;
+    --muted-foreground: 25 5.3% 44.7%;
+    --accent: 60 4.8% 95.9%;
+    --accent-foreground: 24 9.8% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --border: 20 5.9% 90%;
+    --input: 20 5.9% 90%;
+    --ring: 24.6 95% 53.1%;
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 20 14.3% 4.1%;
+    --foreground: 60 9.1% 97.8%;
+    --card: 20 14.3% 4.1%;
+    --card-foreground: 60 9.1% 97.8%;
+    --popover: 20 14.3% 4.1%;
+    --popover-foreground: 60 9.1% 97.8%;
+    --primary: 20.5 90.2% 48.2%;
+    --primary-foreground: 60 9.1% 97.8%;
+    --secondary: 12 6.5% 15.1%;
+    --secondary-foreground: 60 9.1% 97.8%;
+    --muted: 12 6.5% 15.1%;
+    --muted-foreground: 24 5.4% 63.9%;
+    --accent: 12 6.5% 15.1%;
+    --accent-foreground: 60 9.1% 97.8%;
+    --destructive: 0 72.2% 50.6%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --border: 12 6.5% 15.1%;
+    --input: 12 6.5% 15.1%;
+    --ring: 20.5 90.2% 48.2%;
+  }
+}
+/* @layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 142.1 76.2% 36.3%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 142.1 76.2% 36.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 20 14.3% 4.1%;
+    --foreground: 0 0% 95%;
+    --card: 24 9.8% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 142.1 70.6% 45.3%;
+    --primary-foreground: 144.9 80.4% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 12 6.5% 15.1%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 85.7% 97.3%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 142.4 71.8% 29.2%;
+  }
+} */
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.fc {
+  /* the calendar root */
+  max-width: 1400px;
+  @media (max-width: 767px) {
+  width:1000px;
+    
+  }
+  /* margin: 0 auto; */
+}
+
+/*
+for css vars only.
+these values are automatically known in all stylesheets.
+the :root statement itself is only included in the common stylesheet.
+this file is not processed by postcss when imported into the postcss-custom-properties plugin,
+so only write standard css!
+
+NOTE: for old browsers, will need to restart watcher after changing a variable
+*/
+
+.disabled-cell {
+  background: #F1F1F1;
+  pointer-events: none;
+}
+.disabled-cell:hover {
+  cursor: not-allowed;
+}
+
+:root {
+  --fc-small-font-size: 0.85em;
+  --fc-page-bg-color: #fff;
+  --fc-neutral-bg-color: rgba(208, 208, 208, 0.3);
+  --fc-neutral-text-color: #808080;
+  --fc-border-color: #ddd;
+
+  --fc-button-text-color: #fff;
+  --fc-button-bg-color: #FD7E14;
+  --fc-button-border-color: #FD7E14;
+  --fc-button-hover-bg-color: #FD7E14;
+  --fc-button-hover-border-color: #FD7E14;
+  --fc-button-active-bg-color: #FD7E14;
+  --fc-button-active-border-color: #FD7E14;
+
+  --fc-event-bg-color: #FD7E14;
+  --fc-event-border-color: #FD7E14;
+  --fc-event-text-color: #fff;
+  --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
+
+  --fc-more-link-bg-color: #d0d0d0;
+  --fc-more-link-text-color: inherit;
+
+  --fc-event-resizer-thickness: 8px;
+  --fc-event-resizer-dot-total-width: 8px;
+  --fc-event-resizer-dot-border-width: 1px;
+
+  --fc-non-business-color: rgba(215, 215, 215, 0.3);
+  --fc-bg-event-color: #FD7E14;
+  --fc-bg-event-opacity: 0.3;
+  --fc-highlight-color: rgba(188, 241, 199, 0.3);
+  --fc-today-bg-color: rgba(247, 230, 144, 0.4);
+  --fc-now-indicator-color: red;
+
+  --fc-daygrid-event-dot-width: 8px;
+  --fc-list-event-dot-width: 10px;
+  --fc-list-event-hover-bg-color: #f5f5f5;
+}
+
+@media screen and (max-width: 767px) {
+  .fc .fc-button {
+    font-size: 10px;
+  }
+
+  .fc .fc-toolbar-title {
+    font-size: 14px;
+  }
+}
+
+/* css class .scrollbar */
+@layer utilities {
+  /* Scroll thumb styles */
+  .scrollbar::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #27272e;
+    border-radius: 1rem;
+  }
+  .scrollbar::-webkit-scrollbar-thumb:active {
+    background-color: #131314;
+  }
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #3b3b46;
+    box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Scroll track styles (Background) */
+  .scrollbar::-webkit-scrollbar-track {
+    background: #131314;
+    border-radius: 4px;
+  }
+  .scrollbar::-webkit-scrollbar-track:hover,
+  .scrollbar::-webkit-scrollbar-track:active {
+    background: #131314;
+  }
+}
+
+/* global */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 2px grey;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(202, 200, 200);
+  border-radius: 10px;
+}
+
+.sms-bg {
+  background: #FD7E14;
+}
+
+.sms-bg:hover {
+  background: #ff8d30 !important;
+}

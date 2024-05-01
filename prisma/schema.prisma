@@ -1,0 +1,395 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN //admin in mediwise
+  PATIENT //patient in mediwise
+  DOCTOR //doctor in mediwise
+  STOCK_MANAGER // manager stock management system
+  ANONYMOUS // anonymous user
+}
+
+enum AppoinmentStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+enum DispensingStatus {
+  PENDING
+  SUPPLIED
+}
+
+enum ItemTransactionStatus {
+  PENDING
+  ACCEPTED
+  ONGOING
+  COMPLETED
+  REJECTED
+  CANCELLED
+}
+
+model Barangay {
+  id              String            @id @unique @default(cuid())
+  name            String?
+  zip             String?
+  district        String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now()) @updatedAt
+  users           User[]
+  items           BrgyItem[]
+  ItemTransaction ItemTransaction[]
+  WorkSchedule    WorkSchedule[]
+  Appointment     Appointment[]
+  events          Event[]
+  prescriptions   prescription[]
+}
+
+model RequestedItem {
+  id       String @id @default(cuid())
+  quantity Int
+
+  item   SmsItem? @relation(fields: [itemId], references: [id])
+  itemId String?
+
+  ItemTransaction   ItemTransaction? @relation(fields: [itemTransactionId], references: [id], onDelete: Cascade)
+  itemTransactionId String?
+}
+
+model ItemTransaction {
+  id             String                @id @default(cuid())
+  description    String?               @db.VarChar(255)
+  status         ItemTransactionStatus @default(PENDING)
+  fileReport     String?
+  reference      String?
+  barangay       Barangay?             @relation(fields: [barangayId], references: [id], onDelete: Cascade)
+  barangayId     String?
+  // A person from the barangay who requested the item
+  barangayUser   User?                 @relation(fields: [barangayUserId], references: [id], onDelete: Cascade)
+  barangayUserId String?
+
+  requested_items RequestedItem[]
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  isArchive     Boolean        @default(false)
+  notifications Notification[]
+}
+
+model Category {
+  id        String     @id @default(cuid())
+  name      String     @db.VarChar(255)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+  SmsItem   SmsItem[]
+  BrgyItem  BrgyItem[]
+}
+
+model SmsItem {
+  id            String          @id @default(cuid())
+  description   String?         @db.VarChar(255)
+  name          String?         @db.VarChar(255)
+  stock         Int?            @db.Int
+  unit          String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now()) @updatedAt
+  isArchive     Boolean         @default(false)
+  dosage        String?
+  category_id   String?
+  category      Category?       @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  RequestedItem RequestedItem[]
+
+  supplierId String?
+  supplier   Supplier? @relation(fields: [supplierId], references: [id], onDelete: SetNull)
+  items      Item[]
+}
+
+model Event {
+  id String @id @default(cuid())
+
+  title       String
+  description String @db.Text
+
+  isArchived Boolean @default(false)
+
+  image_url String?
+
+  start  DateTime
+  end    DateTime
+  allDay Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  barangayId String
+  barangay   Barangay @relation(fields: [barangayId], references: [id], onDelete: Cascade)
+
+  // user who owns the event post
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  @@index([userId])
+}
+
+model BrgyItem {
+  id               String             @id @default(cuid())
+  description      String?            @db.VarChar(255)
+  name             String?            @db.VarChar(255)
+  stock            Int?               @db.Int
+  unit             String?
+  dosage           String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @default(now()) @updatedAt
+  barangayId       String?
+  barangay         Barangay?          @relation(fields: [barangayId], references: [id], onDelete: Cascade)
+  requestId        String?
+  isArchive        Boolean            @default(false)
+  appointmentItems appointment_item[]
+  category_id      String?
+  category         Category?          @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  items            Item[]             @relation("items")
+  onhand_items     Item[]             @relation("onhand")
+  // notifications     Notification[]
+}
+
+model Item {
+  id              String         @id @default(cuid())
+  product_number  String
+  expiration_date DateTime?      @default(now())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @default(now()) @updatedAt
+  onhandItemId    String?
+  onhandItem      BrgyItem?      @relation(name: "onhand", fields: [onhandItemId], references: [id], onDelete: Cascade)
+  brgyItemId      String?
+  brgyItem        BrgyItem?      @relation(name: "items", fields: [brgyItemId], references: [id], onDelete: Cascade)
+  smsItemId       String?
+  smsItem         SmsItem?       @relation(fields: [smsItemId], references: [id], onDelete: Cascade)
+  notifications   Notification[]
+}
+
+model User {
+  id String @id @default(cuid())
+
+  isArchived       Boolean   @default(false)
+  name             String?
+  email            String?   @unique
+  emailVerified    DateTime?
+  isVerified       Boolean?
+  vefificationCode String?
+  image            String?
+  hashedPassword   String?
+  role             Role      @default(PATIENT)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  barangayId String?
+  barangay   Barangay? @relation(fields: [barangayId], references: [id], onDelete: Cascade)
+
+  accounts             Account[]
+  sessions             Session[]
+  profile              Profile?
+  patient_appointments Appointment[]     @relation("patient")
+  doctor_appointments  Appointment[]     @relation("doctor")
+  workSchedules        WorkSchedule[]
+  ItemTransaction      ItemTransaction[]
+  prescription         prescription[]
+  events               Event[]
+  notifications        Notification[]
+
+  @@index([id])
+}
+
+model Appointment {
+  id                String             @id @unique @default(cuid())
+  queue_number      String?            
+  title             String             @db.VarChar(255)
+  doctorId          String
+  doctor            User               @relation(name: "doctor", fields: [doctorId], references: [id], onDelete: Cascade)
+  patientId         String
+  illness           String?
+  patient           User               @relation(name: "patient", fields: [patientId], references: [id], onDelete: Cascade)
+  date              DateTime
+  isDeleted         Boolean           @default(false)
+  status            AppoinmentStatus   @default(PENDING)
+  dispensing_status DispensingStatus   @default(PENDING)
+  image_path        String?
+  barangayId        String
+  barangay          Barangay           @relation(fields: [barangayId], references: [id], onDelete: Cascade)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @default(now()) @updatedAt
+  notifications     Notification[]
+  appointment_item  appointment_item[]
+
+  workScheduleId String
+  workSchedule   WorkSchedule @relation(fields: [workScheduleId], references: [id], onDelete: Cascade)
+}
+
+model appointment_item {
+  id         String    @id @unique @default(cuid())
+  brgyItemId String?
+  brgyItem   BrgyItem? @relation(fields: [brgyItemId], references: [id])
+
+  appointmentId String?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
+  quantity      Int?         @db.Int
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @default(now()) @updatedAt
+}
+
+model Notification {
+  id String @id @default(cuid())
+
+  content String
+
+  isRead Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // User who is receiving the notification
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  Item   Item?   @relation(fields: [itemId], references: [id])
+  itemId String?
+
+  // barangay_item  BrgyItem? @relation(fields: [barangayItemId], references: [id])
+  // barangayItemId String?
+
+  transaction   ItemTransaction? @relation(fields: [transactionId], references: [id])
+  transactionId String?
+
+  // appointment-related fields
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
+  appointmentId String?
+}
+
+model WorkSchedule {
+  id         String    @id @unique @default(cuid())
+  title      String
+  isArchived Boolean   @default(false)
+  start      DateTime?
+  end        DateTime?
+  allDay     Boolean?
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  // doctor who owns the work schedule
+  doctorId     String
+  doctor       User          @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  barangayId   String
+  barangay     Barangay      @relation(fields: [barangayId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum SupplierStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Supplier {
+  id            String         @id @unique @default(cuid())
+  name          String
+  contactPerson String
+  contactNo     String
+  address       String
+  status        SupplierStatus @default(ACTIVE)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  smsItems      SmsItem[]
+}
+
+model prescription {
+  id            String   @id @unique @default(cuid())
+  image         String   @db.LongText
+  convertedText String?  @db.LongText
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  barangayId String
+  barangay   Barangay @relation(fields: [barangayId], references: [id], onDelete: Cascade)
+}
+
+model Profile {
+  id String @id @unique @default(cuid())
+
+  firstname  String?
+  lastname   String?
+  middlename String?
+  suffix     String?
+  gender     Gender?
+
+  specialist String? // for doctor only
+  licenseNo  String? // for doctor only
+
+  dateOfBirth DateTime?
+  homeNo      String? @default("N/A")
+  street      String? @default("N/A")
+  barangay    String? @default("N/A")
+  city        String? @default("Caloocan")
+  // province    String?
+  contactNo   String? @default("N/A")
+  zip         String? @default("N/A")
+  district    String? @default("N/A")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+
+  @@index([userId])
+}
+
+// Necessary for Next auth
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
