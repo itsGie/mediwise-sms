@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Created</title>
+  <style>
+    /* Reset styles */
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-color: #f3f3f3; /* Light grey background */
+    }
+    /* Main content styles */
+    .container {
+      width: 100%;
+      margin: 0 auto;
+      max-width: 600px;
+      padding: 20px;
+      background-color: #fff; /* White background */
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #ff7f50; /* Orange color */
+    }
+    .appointment-details {
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ccc; /* Light grey border */
+      padding-bottom: 20px;
+    }
+    .appointment-details p {
+      margin: 5px 0;
+    }
+   
+    /* Footer styles */
+    footer {
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      padding: 20px 0;
+      max-width: 640px;
+      background-color: #32cd32; /* Green color */
+      border-radius: 0 0 10px 10px;
+    }
+    footer p {
+      margin: 0;
+      font-size: 14px;
+      color: #fff; /* White color */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>User Created</h1>
+    <div class="appointment-details">
+      <h2>Welcome to mediwise </h2>
+      <h3>This is your email and password to open your account</h3>
+      <p><strong>Email:</strong> {{email}}</p>
+      <p><strong>Password:</strong> {{password}}</p>
+    </div>
+    <p> You can login you account at <a href="https://mediwise-sms.com">this link</a></p>
+  </div>
+  <footer>
+    <p>&copy; 2024 Mediwise-sms. All rights reserved.</p>
+  </footer>
+</body>
+</html>

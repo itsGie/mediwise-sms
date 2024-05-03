@@ -35,7 +35,7 @@ export const columns: ColumnDef<TItemBrgy & {items: Item[], onhand_items: Item[]
   {
     accessorKey: "name",
     accessorFn: (row) => {
-      const name = row.name;
+      const name = row?.name;
       return name;
     },
     header: ({ column }) => {
@@ -49,7 +49,7 @@ export const columns: ColumnDef<TItemBrgy & {items: Item[], onhand_items: Item[]
       );
     },
     cell: ({ row }) => {
-      const name = row.original.name;
+      const name = row.original?.name;
       return (
         <div className=" dark:text-white">
           {name}
@@ -61,7 +61,7 @@ export const columns: ColumnDef<TItemBrgy & {items: Item[], onhand_items: Item[]
   {
     accessorKey: "description",
     accessorFn: (row) => {
-      const description = row.description;
+      const description = row?.description;
       return description;
     },
     header: ({ column }) => (
@@ -103,7 +103,7 @@ export const columns: ColumnDef<TItemBrgy & {items: Item[], onhand_items: Item[]
   {
     accessorKey: "stock",
     accessorFn: (row) => {
-      const stock = row.items.length;
+      const stock = row.items?.length || 0;
       return stock;
     },
     header: ({ column }) => (
@@ -115,7 +115,7 @@ export const columns: ColumnDef<TItemBrgy & {items: Item[], onhand_items: Item[]
       </div>
     ),
     cell: ({ row }) => {
-      const stock = row.original?.items?.length;
+      const stock = row.original?.items?.length || 0;
 
       return <div className={` flex items-center`}>{stock}</div>;
     },
@@ -159,7 +159,6 @@ export const columns: ColumnDef<TItemBrgy & {items: Item[], onhand_items: Item[]
       </div>
     ),
     cell: ({ row }) => {
-      console.log(row?.original)
       const stock = row?.original?.appointmentItems.reduce((sum, item) => {
         return (item?.quantity || 0) + sum
       }, 0);
@@ -172,7 +171,7 @@ export const columns: ColumnDef<TItemBrgy & {items: Item[], onhand_items: Item[]
   {
     accessorKey: "dosage",
     accessorFn: (row) => {
-      const dosage = row.dosage;
+      const dosage = row?.dosage;
       return dosage;
     },
     header: ({ column }) => (
@@ -193,7 +192,7 @@ export const columns: ColumnDef<TItemBrgy & {items: Item[], onhand_items: Item[]
   {
     accessorKey: "unit",
     accessorFn: (row) => {
-      const unit = row.unit;
+      const unit = row?.unit;
       return unit;
     },
     header: ({ column }) => (
@@ -214,7 +213,7 @@ export const columns: ColumnDef<TItemBrgy & {items: Item[], onhand_items: Item[]
   {
     accessorKey: "createdAt",
     accessorFn: (row) => {
-      const createdAt = row.createdAt;
+      const createdAt = row?.createdAt;
       return createdAt;
     },
     header: ({ column }) => {

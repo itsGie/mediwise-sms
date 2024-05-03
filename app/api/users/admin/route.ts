@@ -11,7 +11,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateRandomString } from "@/lib/random";
 import prisma from "@/lib/prisma";
 import sendMail from "@/lib/smtp";
-
+import handlebars from 'handlebars'
+import fs from 'fs'
 
 export const POST = withAuth(
   async ({ req, session }) => {
@@ -63,27 +64,14 @@ export const POST = withAuth(
           profile: true
         }
       })
-      const content = `
-      <div> 
-        <h3> Hello ${{...rest}.gender === 'MALE' ? 'Mr.' : 'Mrs.'} ${user.profile?.firstname} ${user.profile?.lastname} </h3>
-  
-        <h4> Your account in Mediwise system has been created </h4>
-        <p> This is your email and password to open your account </p>
-
-      <section>
-        <div> 
-          <strong>Email:</strong> <span>${user.email}</span> 
-        </div>
-        <div> 
-          <strong>Password:</strong> <span>${randomString}</span> 
-        </div>
-        </section>
-
-        <small> - MEDIWISE/SMS ADMIN </small>
-      </div>
-      `;
-  
-      sendMail({ content, subject: "Admin Account Information", emailTo: user?.email as string });
+      const source = fs.readFileSync(`${__dirname}/../../../../../../public/template/user-created.html`, 'utf-8').toString()
+      const template = handlebars.compile(source)
+      const replacement = {
+        email:email ,
+        password: randomString,
+      }
+      const reminderContent = template(replacement);
+      sendMail({ content:reminderContent, subject: "User Creation", emailTo: user.email as string });
       // TODO: email the accout details to the user
 
       return NextResponse.json(user, { status: 201 });
@@ -103,7 +91,8 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
             include:{
               users: {
                 where: {
-                  role:'ADMIN'
+                  role:'ADMIN',
+                  isArchived: false
                 }
               }
             }

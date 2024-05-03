@@ -31,6 +31,7 @@
     "@progress/kendo-react-common": "^7.0.2",
     "@progress/kendo-react-pdf": "^7.0.2",
     "@progress/kendo-react-popup": "^7.0.2",
+    "@progress/kendo-svg-icons": "^2.3.0",
     "@progress/kendo-theme-material": "^7.0.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
