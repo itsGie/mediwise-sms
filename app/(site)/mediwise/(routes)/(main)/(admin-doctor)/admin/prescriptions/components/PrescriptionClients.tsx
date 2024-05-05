@@ -31,9 +31,9 @@ const PrescriptionClients: React.FC<PrescriptionClientProps> = ({
     (TPrescriptionSchema & { user: User & { profile: Profile } })[]
   >({
     url: `/prescriptions`,
-    // queryParams: {
-    //   userId: currentUser.id,
-    // },
+    queryParams: {
+      barangayId: currentUser.barangayId,
+    },
     key: ["prescriptions"],
   });
 

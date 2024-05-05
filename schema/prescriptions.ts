@@ -37,8 +37,10 @@ export type TUpdatePrescriptionSchema = z.infer<typeof UpdatePrescriptionSchema>
 
 export const PrescriptionQuerySchema = PrescriptionSchema.pick({
   userId:true,
+  barangayId:true
 })
 .partial({
   userId:true,
+  barangayId:true
 })
 
