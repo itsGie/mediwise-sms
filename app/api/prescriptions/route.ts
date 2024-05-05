@@ -26,7 +26,8 @@ export async function GET(req: NextRequest, { params }: { params: {} }) {
 
     const prescriptions = await prisma.prescription.findMany({
       where: {
-        userId: queries.data.userId
+        userId: queries.data.userId ?? undefined,
+        barangayId:queries.data.barangayId ?? undefined
       },
       include: {
         user:{
